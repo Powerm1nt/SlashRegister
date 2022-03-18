@@ -1,0 +1,24 @@
+{
+  "groups": [
+    {
+      "name": "help",
+      "description": "help commands",
+      "subcommands": [
+        {
+          "name": "ping",
+          "description": "help about the /ping command",
+          "args": [],
+          "function": "./help_ping.js"
+        }
+      ]
+    }
+    ],
+  "solo": [
+    {
+      "name": "ping",
+      "description": "Send the bot's latency",
+      "args": [],
+      "function": "./ping.js"
+    }
+  ]
+}
