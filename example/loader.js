@@ -4,6 +4,24 @@ const { Routes } = require('discord-api-types/v9');
 const { token, clientId } = require('../config.json');
 const { REST } = require('@discordjs/rest');
 
+function addNumberOpt(opt, arg) {
+
+    opt.setName(arg.name)
+        .setDescription(arg.description)
+        .setRequired(arg.important);
+
+    if (typeof arg.min === 'number'){
+        opt.setMinValue(arg.min);
+    }
+
+    if (typeof arg.max === 'number'){
+        opt.setMaxValue(arg.max);
+    }
+
+    return opt;
+
+}
+
 function addArgs(command, args) {
 
     args.forEach( arg=> {
@@ -18,10 +36,11 @@ function addArgs(command, args) {
                 break;
 
             case "int":
-                command.addIntegerOption(opt =>
-                    opt.setName(arg.name)
-                        .setDescription(arg.description)
-                        .setRequired(arg.important));
+                command.addIntegerOption(opt => {
+
+                    return addNumberOpt(opt, arg);
+                })
+
                 break;
 
             case "user":
@@ -30,8 +49,71 @@ function addArgs(command, args) {
                         .setDescription(arg.description)
                         .setRequired(arg.important));
                 break;
+
+            case "role":
+                command.addRoleOption(opt =>
+                    opt.setName(arg.name)
+                        .setDescription(arg.description)
+                        .setRequired(arg.important));
+                break;
+
+            case "channel":
+                command.addChannelOption(opt => {
+
+                    opt.setName(arg.name)
+                        .setDescription(arg.description)
+                        .setRequired(arg.important);
+
+                    if (arg.accepted_types) {
+
+                        let accepted = []
+
+                        // Missing index 1 (DM), 3 (GROUP_DM) are missing beceause you can't select a dm or a dm group with slashs
+                        // Missing index 6 (GUILD_STORE) because store channels have been removed from every guild, and can't be created anymore.
+                        // Missing index ]6;10[ because of discord API (no channels type related to 7, 8 & 9)
+                        let list = ["text",
+                            "null",
+                            "voice",
+                            "null",
+                            "category",
+                            "news",
+                            "store",
+                            "null",
+                            "null",
+                            "null",
+                            "news_thread",
+                            "public_thread",
+                            "private_tread",
+                            "stage"];
+
+                        arg.accepted_types.forEach( type => {
+                            accepted.push(list.indexOf(type));
+                        });
+                        opt.addChannelTypes(accepted);
+                    }
+                    return opt;
+                });
+                break;
+
+            case "mentionable":
+                command.addMentionableOption(opt =>
+                    opt.setName(arg.name)
+                        .setDescription(arg.description)
+                        .setRequired(arg.important));
+                break;
+
+
             case "number":
-                command.addNumberOption(opt =>
+
+                command.addNumberOption(opt => {
+                    return addNumberOpt(opt, arg);
+                })
+
+                break;
+
+            case "bool":
+
+                command.addBooleanOption(opt =>
                     opt.setName(arg.name)
                         .setDescription(arg.description)
                         .setRequired(arg.important));
@@ -51,13 +133,14 @@ function addArgs(command, args) {
                 break;
 
             default:
-                console.log(`Type ${arg.type} inconnu !`)
+                console.log(`Unknown type ${arg.type}  !`)
                 break;
         }
 
     })
 
 }
+
 
 const loadSlashCommands = () => {
 
