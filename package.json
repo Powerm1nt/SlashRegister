@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Powerm1nt/SlashRegister#readme",
   "dependencies": {
+    "discord-api-types": "^0.29.0",
     "discord.js": "^13.6.0"
   }
 }
