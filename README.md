@@ -1,39 +1,51 @@
 # Interactions
 
-Please, not that the doc is only in French for the moment
-
-[Accéder à la documentation sur les boutons](#boutons)
+[Buttons documentation](#boutons) (not translated yet)
 
 ## Slashs commands
-Les slashs commands sont un système pratique et géré par discord pour créer un système de commande.
 
-### Liens rapides :
+Slashs commands are a easy, usefull & discord-managed way to create command system.
+
+### Summary:
 - Slashs commands:
-  * [Exemples](#exemple-de-groupe-)
-  * [Documentation sur les arguments](#documentation-sur-les-arguments-)
-  * [Documentation sur les objets](#documentation-sur-les-objets-)
-  * [Fonctionnement](#fonctionnement-)
+  * [Exemples](#group-sample-)
+  * [Documentation on args](#args-documentation-)
+  * [Documentation on objects](#objects-documentation-)
+  * [How it works ?](#fonctionnement-)
 
 
-## Documentation sur l'enregistrement des slashs :
+## Registering slashs :
 
-### Groupes et sous-commandes :
-Les groupes contiennent des slashs commands, comme une sorte de dossier.
-Elles permettent de mieux répartir les slashs de manière à les ranger convenablement, et de savoir où chercher pour une commande.
+* All slashs must be registered in `slashs.json` file with the bellow format
+* The loader does NOT alter guilds commands
+* You CAN'T create role/user-restricted slashs
+* There is a maximum of 25 sub-commands per groups </br>
+* There is a total maximum of 100 groups + slash commands 
+(Ex: 20 groups & 80 slashs)
+* A group can't have the `name` of a slash command, but a group and a sub-command or a slash an a sub-command can.
 
-Il y a un maximum de 25 sous-commandes par groupes </br>
-Il y a un maximum 100 groupes + slash commands (Par exemple, 20 groupes et 80 slashs commands) </br>
-Un groupe ne peut pas avoir le même `name` qu'une slash command, mais un groupe et une sous-commande peuvent.
 
 
-### Exemple de groupe :
+### Root commands :
+Command (or root slashs) are the more basic command type.
+
+* Root slashs are registered in "`solo`" 
+
+* You can't create a group with the same `name` as a group.
+
+
+### Groups & Subcommands :
+Groups contains slashs command, like a folder. It allows you to have tidy slashs !
+User know what is the base/root command name.
+
+### Group sample :
 ```json
 {
   "groups":
     [
       {
         "name": "admin",
-        "description": "Commandes d'administration",
+        "description": "Admin commands",
         "subcommands": [
           Subcommands ...
         ]
@@ -41,20 +53,19 @@ Un groupe ne peut pas avoir le même `name` qu'une slash command, mais un groupe
     ]
 }
 ```
+The loader will now load subcommand inside `subcommands`
 
-Il charge ensuite les subcommands à l'intérieur de chaque catégorie.
-
-### Exemple de sous-commande :
+### Subcommands sample :
 ```json
 ...
 "subcommands":[
     {
-      "name": "botreport",
-      "description": "Permet de faire un signalement sur le bot.",
+      "name": "options",
+      "description": "Edit options",
       "args": [
         {
-          "name": "content",
-          "description": "contenu du signalement",
+          "name": "option",
+          "description": "the name of the option",
           "type": "str",
           "important": true
         }
@@ -62,33 +73,25 @@ Il charge ensuite les subcommands à l'intérieur de chaque catégorie.
     }
 ]
 ```
-### Commandes :
 
-Pour enregistrer une slash command "normale"/"racine", la syntaxe est plutôt similaire à celle pour les sous-commandes :
-
-* Les slashs s'enregistrent dans "`solo`" et non "`groups`"
-
-* Les slashs commands s'enregistrent de la même facon que les subcommands
-
-* Il n'est pas possible de créer un groupe de sous-commandes avec le nom d'une slash command (exemple : il n'est pas possible de créer une slash `/help` si `help`est le nom d'un groupe de sous-commandes)
-
-### Exemple de commande :
+### Root command sample :
 ```json
 {
   "solo": [
     {
       "name": "random",
-      "description": "Donne un nombre aléatoire",
+      "description": "Send random number",
       "args": [
         {
           "name": "minimum",
-          "description": "Nombre aléatoire minimum",
+          "description": "The minimum obtenable number",
           "type": "int",
+          "min": 0
           "important": true
         },
         {
           "name": "maximum",
-          "description": "Nombre aléatoire maximum",
+          "description": "The maximum obtenable number",
           "type": "int",
           "important": true
         }
@@ -101,7 +104,7 @@ Pour enregistrer une slash command "normale"/"racine", la syntaxe est plutôt si
 ```
 
 
-Le fichier [`slashs.json`](../interactions/slashs.json) resemble donc à quelque chose comme cela :
+So, the file `slashs.json` can look something like this:
 
 ```json
 {
@@ -111,25 +114,27 @@ Le fichier [`slashs.json`](../interactions/slashs.json) resemble donc à quelque
       "description": "...",
       "subcommands": [
         {
-          "name": "commande_1",
-          "description": "Première commande du groupe ",
-          "args": []
+          "name": "command_1",
+          "description": "First command ",
+          "args": [],
+		      "function":"./admin_cmd2.js"
         },
         {
-          "name": "commande_2",
-          "description": "Deuxième commande du groupe ",
-          "args": []
+          "name": "command_2",
+          "description": "Second command",
+          "args": [],
+		      "function":"./admin_cmd2.js"
         }
       ]
     },
 
     {
-      "name": "utilitaire",
+      "name": "tools",
       "description": "...",
       "subcommands": [
         {
-          "name": "commande_1",
-          "description": "première commande du groupe",
+          "name": "command_1",
+          "description": "first command of this group",
           "args": [
             {
               "name": "option",
@@ -137,7 +142,8 @@ Le fichier [`slashs.json`](../interactions/slashs.json) resemble donc à quelque
               "type": "str",
               "important": false
             }
-          ]
+          ],
+          "function":"./cmd1_tools.js"
         }
       ]
     }
@@ -146,112 +152,112 @@ Le fichier [`slashs.json`](../interactions/slashs.json) resemble donc à quelque
   "solo": [
     {
       "name": "random",
-      "description": "Donne un nombre aléatoire",
+      "description": "Send random number",
       "args": [
         {
           "name": "minimum",
-          "description": "Nombre aléatoire minimum",
+          "description": "The minimum obtenable number",
           "type": "int",
+          "min": 0
           "important": true
         },
         {
           "name": "maximum",
-          "description": "Nombre aléatoire maximum",
+          "description": "The maximum obtenable number",
           "type": "int",
           "important": true
         }
-      ]
+      ],
+      "function":"./random.js"
     },
     {
       "name": "8ball",
-      "description": "Répond à votre question",
+      "description": "Answser your question",
       "args": [
         {
           "name": "question",
-          "description": "Question à poser à la bouboule magique",
+          "description": "The question to ask",
           "type": "str",
           "important": true
         }
-      ]
+      ],
+      "function":"./8ball.js"
     }
   ]
 }
 ```
-Veuillez noter que `groupe` **et** `solo` peuvent être vide.
 
 ----
 
-### Documentation sur les arguments :
+### Args documentation :
 
 ###### `name`:
-> Nom de l'argument / slash command / sous-commande / groupe. </br>
-> Ne peut contenir d'espaces, majuscules et caractères spéciaux </br>
-> 32 caractères max, obligatoire </br>
+> Arg / root command / subcommand / group name. </br>
+> Only lowercase letters or numbers</br>
+> 32 chars max, required</br>
 
 ###### `description`:
-> Description de l'argument / slash command / sous-commande / groupe. </br>
-> Peut contenir tout type de caractères (Minuscules, majuscules, chiffres, caractères spéciaux) </br>
-> 100 caractères max, non obligatoire </br>
+> Arg / root command / subcommand / group description. </br>
+> Can contain every character</br>
+> 100 chars max, required </br>
 
 ###### `subcommand`:
-> Liste des sous-commandes du groupe </br>
-> doit contenir une [commande](#objet-sous-commande) </br>
-> doit contenir entre 1 et 25 sous-commandes </br>
+> Subcommand list </br>
+> Must contain list of [command](#object-subcommand) object </br>
+> **Must** contain between 1 & 25 subcommands </br>
 
 ###### `args`:
-> Liste des arguments d'une sous-commande / slash commande </br>
-> doit contenir un [argument](#objet-argument) </br>
-> Peut être laissé vide, ne doit dépasser 25 arguments
+> Args list of a subcommand / root command </br>
+> Must contain list of [argument](#object-argument) </br>
+> Can be an empty list, can contain up to 25 args
 
 ##### `type`:
-> Type de l'argument attendu dans un argument
-> Doit être parmi :
-> * str (chaine de caractère)
-> * int (Nombre* entier)
-> * number (Nombre* flottant)
-> * user (Utilisateur)
+> Desired type of argument
+> Must be either :
+> * str (string)
+> * int (Integer*)
+> * number (floating number*)
+> * user (guild user)
+> * channel (guild channel or category)
+> * role (guild role)
+> * mentionable ( guild role, user, channel, category)
+>  * bool (Boolean option)
+>  * option ( list of options)
 >
-> Limité à un seul par argument, obligatoire </br> </br>
-> *\* Nombre compris entre [-2^53 ; 2^53]* </br>
-> *tous les types proposé par discord ne sont pas encore intégrés et documentés, n'hésitez pas à demander pour voir [votre type](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type) intégré*
+> Only one type per args, required 
+> *\* Number between [-2^53  ;  2^53]* 
+> *Attachments are the only type not integrated yet. It will be with DJS V13*
 
 ---
-### Documentation sur les objets :
+### Objects documentation :
 
-#### Objet `Argument`:
-__Un argument dispose de plusieurs paramètres :__
+#### Object `Arg`:
 
-[name](#name) (string) : Nom de l'argument </br>
-[description](#description) (string) : Description de l'argument </br>
-[type](#type) (string) : Type de l'argument attendu </br>
-important (booléen) : Si l'argument est obligatoire ou non. </br> </br>
-
-#### Objet `(Sous-)Commande`:
-[name](#name) (string) : Nom de la (sous-)commande </br>
-[description](#description) (string) : Description de la (sous-)commande </br>
-[args](#objet-argument) (list[argument]) : Liste des arguments de la (sous-)commande </br> </br>
-
-#### Objet `Groupe`:
-[name](#name) (string) : Nom du groupe de commande </br>
-[description](#description) (string) : Description du groupe </br>
-[args](#objet-sous-commande) (list[commande]) : Liste des commandes du groupe
+* [`name`](#name) (string) : The name of the arg 
+* [`description`](#description) (string) : Description of the arg
+* [ `type`](#type) (string) : Type of the arg</br>
+* `important` (bool) : If the argument is required or not.
+> Optional args:
+* `channels` (list[string]) : the selectable channels types between `text` ,`voice`, `category`, `news`, `store`, `news_thread`, `public_thread`, `private_tread` and `stage`. Can contain multiple channel types
+* `min`and `max` (int) : the min or the max value for float/integers. must be a number between  [-2^53  ;  2^53]
 
 
----
-### Fonctionnement :
-Au démarrage, le bot va enregistrer les commandes présentes dans [interactions/slashs.json](../interactions/slashs.json) et les envoyer à discord.
-Le fichier json permet l'enregistrement des slashs commands de manière simplifiée et lisible.
-Le bot "traduira" ce fichier en objet compréhensible par l'API de discord.
+#### Object `(sub)command`:
+* [`name`](#name) (string) : Name of the (sub)command
+* [`description`](#description) (string) : Description of the (sub)command
+* [`args`](#object-arg) (list[arg]) : list of the (sub)command's args 
+* `function` (string): path to the file that must be executed when the command is triggered </br>
 
-Cette procédure a lieu à chaque (re)démarrage.
+#### Object `Group`:
+* [name](#name) (string) : Name of the group </br>
+* [description](#description) (string) : Description of the group </br>
+* [args](#object-subcommand) (list[command]) : List of subcommands of this group
 
-Si une modification a eu lieu sur une commande, elle peut être jusqu'à une heure pour s'afficher sur tous les serveurs, dû au cache individuel de chaque serveur (= guild) discord qui dure une heure.
-
----
----
 ---
 
 ## Boutons
+
+NOT TRANSLATED YET
 
 L'utilisation des boutons est un moyen simple et efficace de replacer l'utilisation des réactions.
 
@@ -308,4 +314,4 @@ En clair, le bot ne récupérera pas directement le `customId`, mais l'élément
 > Ne doit dépasser 100 caractères</br>
 ---
 ### Fonctionnement des boutons :
-Lorsqu'un bouton sera cliqué, le bot vérifiera si l'`id` est présent dans `buttons.json`, et exécutera la fonction associée dans le cas échéant. 
+Lorsqu'un bouton sera cliqué, le bot vérifiera si l'`id` est présent dans `buttons.json`, et exécutera la fonction associée dans le cas échéant.
