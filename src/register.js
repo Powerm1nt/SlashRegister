@@ -1,4 +1,4 @@
-let { groups, solo } = require("../interactions/slashs.json");
+let { groups, solo } = require("./slashs.json");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { Routes } = require("discord-api-types/v9");
 const { token, clientId } = require("../config.json");
@@ -203,4 +203,3 @@ const loadSlashCommands = () => {
 module.exports = {
   loadSlashCommands,
 };
-
