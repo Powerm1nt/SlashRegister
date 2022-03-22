@@ -249,9 +249,9 @@ So, the file `slashs.json` can look something like this:
 * `function` (string): path to the file that must be executed when the command is triggered </br>
 
 #### Object `Group`:
-* [name](#name) (string) : Name of the group </br>
-* [description](#description) (string) : Description of the group </br>
-* [args](#object-subcommand) (list[command]) : List of subcommands of this group
+* [`name`](#name) (string) : Name of the group </br>
+* [`description`](#description) (string) : Description of the group </br>
+* [`args`](#object-subcommand) (list[command]) : List of subcommands of this group
 
 ---
 
