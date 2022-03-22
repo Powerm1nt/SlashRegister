@@ -1,0 +1,24 @@
+{
+  "name": "slashregister",
+  "version": "1.0.0",
+  "description": "[Buttons documentation](#boutons) (not translated yet)",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Powerm1nt/SlashRegister.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Powerm1nt/SlashRegister/issues"
+  },
+  "homepage": "https://github.com/Powerm1nt/SlashRegister#readme",
+  "dependencies": {
+    "discord.js": "^13.6.0"
+  }
+}

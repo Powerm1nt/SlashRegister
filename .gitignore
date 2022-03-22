@@ -1,0 +1,10 @@
+# Main uneeded files
+
+package-lock.json
+pnpm-lock.yaml
+*.lock
+.env
+
+# Node stuff
+/node_modules/
+
